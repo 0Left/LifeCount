@@ -79,35 +79,51 @@ tr:nth-child(even) {
     background-color: #f8f9fa;
 }
 
-.log-container {
-    margin-top: 20px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
 .log-entry {
-    padding: 5px 0;
+    padding: 10px;
     border-bottom: 1px solid #ddd;
 }
 
-.action-buttons button {
-    padding: 4px 8px;
-    font-size: 0.9em;
+.action-buttons {
+    min-width: 500px;
 }
 
-.action-buttons button:first-child {
-    background-color: #dc3545;
+.life-controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
 }
 
-.action-buttons button:nth-child(2) {
-    background-color: #28a745;
+.life-control-group {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-start;
 }
 
-.action-buttons button:last-child {
+.life-control-group button {
+    padding: 8px 12px;
+    font-size: 1em;
+    min-width: 50px;
+    font-weight: bold;
+}
+
+/* Negative buttons - red gradient */
+.life-control-group button:nth-child(1) { background-color: #dc3545; } /* -5 */
+.life-control-group button:nth-child(2) { background-color: #e35d6a; } /* -3 */
+.life-control-group button:nth-child(3) { background-color: #e67e88; } /* -1 */
+
+/* Positive buttons - green gradient */
+.life-control-group button:nth-child(4) { background-color: #28a745; } /* +1 */
+.life-control-group button:nth-child(5) { background-color: #218838; } /* +3 */
+.life-control-group button:nth-child(6) { background-color: #1e7e34; } /* +5 */
+
+.remove-btn {
     background-color: #6c757d;
+    font-size: 1em;
+    padding: 8px 16px;
+    margin-left: auto;
 }
 
 /* Modal Styles */
@@ -174,4 +190,56 @@ tr:nth-child(even) {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+}
+
+/* Log Drawer Styles */
+.log-drawer {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 400px;
+    height: 100vh;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease-in-out;
+    z-index: 900;
+}
+
+.log-drawer.show {
+    right: 0;
+}
+
+.log-header {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.log-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.close-drawer {
+    font-size: 24px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.close-drawer:hover {
+    color: #000;
+}
+
+#logContainer {
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    padding: 10px;
 }

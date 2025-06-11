@@ -13,6 +13,11 @@ class TableController {
         const closeModalBtns = document.getElementsByClassName('close-modal');
         const addPlayerBtn = document.getElementById('addPlayerBtn');
         
+        // Log drawer controls
+        const logDrawer = document.getElementById('logDrawer');
+        const toggleLogBtn = document.getElementById('toggleLogBtn');
+        const closeDrawerBtn = document.querySelector('.close-drawer');
+
         // Open modal
         openModalBtn?.addEventListener('click', () => {
             modal.classList.add('show');
@@ -42,6 +47,16 @@ class TableController {
         
         // Reset table button
         document.getElementById('resetTableBtn')?.addEventListener('click', () => this.handleResetTable());
+
+        // Toggle log drawer
+        toggleLogBtn?.addEventListener('click', () => {
+            logDrawer.classList.toggle('show');
+        });
+
+        // Close log drawer
+        closeDrawerBtn?.addEventListener('click', () => {
+            logDrawer.classList.remove('show');
+        });
     }
 
     clearForm() {
@@ -101,9 +116,17 @@ class TableController {
                 <td>${player.name}</td>
                 <td>${player.lifeTotal}</td>
                 <td class="action-buttons">
-                    <button onclick="tableController.handleUpdateLife('${player.id}', -1)">-1</button>
-                    <button onclick="tableController.handleUpdateLife('${player.id}', 1)">+1</button>
-                    <button onclick="tableController.handleRemovePlayer('${player.id}')">Remove</button>
+                    <div class="life-controls">
+                        <div class="life-control-group">
+                            <button onclick="tableController.handleUpdateLife('${player.id}', -5)">-5</button>
+                            <button onclick="tableController.handleUpdateLife('${player.id}', -3)">-3</button>
+                            <button onclick="tableController.handleUpdateLife('${player.id}', -1)">-1</button>
+                            <button onclick="tableController.handleUpdateLife('${player.id}', 1)">+1</button>
+                            <button onclick="tableController.handleUpdateLife('${player.id}', 3)">+3</button>
+                            <button onclick="tableController.handleUpdateLife('${player.id}', 5)">+5</button>
+                        </div>
+                        <button class="remove-btn" onclick="tableController.handleRemovePlayer('${player.id}')">Remove</button>
+                    </div>
                 </td>
             `;
             tableBody.appendChild(row);

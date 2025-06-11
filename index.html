@@ -13,6 +13,7 @@
         <div class="controls">
             <button id="openModalBtn" class="primary-button">Add New Player</button>
             <button id="resetTableBtn">Reset Table</button>
+            <button id="toggleLogBtn" class="secondary-button">Toggle Log</button>
         </div>
 
         <table>
@@ -27,12 +28,16 @@
                 <!-- Player rows will be dynamically added here -->
             </tbody>
         </table>
+    </div>
 
-        <div class="log-container">
+    <!-- Log Drawer -->
+    <div id="logDrawer" class="log-drawer">
+        <div class="log-header">
             <h2>Action Log</h2>
-            <div id="logContainer">
-                <!-- Log entries will be dynamically added here -->
-            </div>
+            <button class="close-drawer">&times;</button>
+        </div>
+        <div id="logContainer">
+            <!-- Log entries will be dynamically added here -->
         </div>
     </div>
 
