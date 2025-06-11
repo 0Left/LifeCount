@@ -7,11 +7,48 @@ class TableController {
     }
 
     initializeEventListeners() {
-        // Add player button listener
-        document.getElementById('addPlayerBtn')?.addEventListener('click', () => this.handleAddPlayer());
+        // Modal controls
+        const modal = document.getElementById('addPlayerModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtns = document.getElementsByClassName('close-modal');
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
         
-        // Reset table button listener
+        // Open modal
+        openModalBtn?.addEventListener('click', () => {
+            modal.classList.add('show');
+        });
+
+        // Close modal
+        Array.from(closeModalBtns).forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.classList.remove('show');
+                this.clearForm();
+            });
+        });
+
+        // Close modal when clicking outside
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                this.clearForm();
+            }
+        });
+
+        // Add player button
+        addPlayerBtn?.addEventListener('click', () => {
+            this.handleAddPlayer();
+            modal.classList.remove('show');
+        });
+        
+        // Reset table button
         document.getElementById('resetTableBtn')?.addEventListener('click', () => this.handleResetTable());
+    }
+
+    clearForm() {
+        const nameInput = document.getElementById('playerName');
+        const lifeInput = document.getElementById('lifeTotal');
+        if (nameInput) nameInput.value = '';
+        if (lifeInput) lifeInput.value = '20';
     }
 
     handleAddPlayer() {
@@ -26,8 +63,7 @@ class TableController {
                 const playerId = Date.now().toString(); // Generate unique ID
                 this.table.addPlayer(playerId, name, lifeTotal);
                 this.updateTableDisplay();
-                nameInput.value = '';
-                lifeInput.value = '20';
+                this.clearForm();
             }
         }
     }
@@ -64,7 +100,7 @@ class TableController {
             row.innerHTML = `
                 <td>${player.name}</td>
                 <td>${player.lifeTotal}</td>
-                <td>
+                <td class="action-buttons">
                     <button onclick="tableController.handleUpdateLife('${player.id}', -1)">-1</button>
                     <button onclick="tableController.handleUpdateLife('${player.id}', 1)">+1</button>
                     <button onclick="tableController.handleRemovePlayer('${player.id}')">Remove</button>

@@ -10,18 +10,8 @@
     <div class="container">
         <h1>Life Counter</h1>
         
-        <div class="add-player-form">
-            <h2>Add New Player</h2>
-            
-            <div class="form-group">
-                <label for="playerName">Player Name:</label>
-                <input type="text" id="playerName" placeholder="Enter player name">
-            </div>
-            <div class="form-group">
-                <label for="lifeTotal">Starting Life Total:</label>
-                <input type="number" id="lifeTotal" value="20" min="1">
-            </div>
-            <button id="addPlayerBtn">Add Player</button>
+        <div class="controls">
+            <button id="openModalBtn" class="primary-button">Add New Player</button>
             <button id="resetTableBtn">Reset Table</button>
         </div>
 
@@ -42,6 +32,30 @@
             <h2>Action Log</h2>
             <div id="logContainer">
                 <!-- Log entries will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="addPlayerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Player</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="playerName">Player Name:</label>
+                    <input type="text" id="playerName" placeholder="Enter player name">
+                </div>
+                <div class="form-group">
+                    <label for="lifeTotal">Starting Life Total:</label>
+                    <input type="number" id="lifeTotal" value="20" min="1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="addPlayerBtn" class="primary-button">Add Player</button>
+                <button class="secondary-button close-modal">Cancel</button>
             </div>
         </div>
     </div>
