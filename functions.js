@@ -3,7 +3,64 @@ import PlayersTable from './playersTable.js';
 class TableController {
     constructor() {
         this.table = new PlayersTable();
+        this.loadTableFromStorage();
         this.initializeEventListeners();
+    }
+
+    // Carregar dados da mesa do localStorage
+    loadTableFromStorage() {
+        const savedTable = localStorage.getItem('lifeCounterTable');
+        if (savedTable) {
+            try {
+                const tableData = JSON.parse(savedTable);
+                this.table.playersList = tableData.playersList || [];
+                this.table.log = tableData.log || [];
+                this.updateTableDisplay(); // Atualizar a interface após carregar os dados
+                this.showStatusMessage(`Mesa carregada com ${this.table.playersList.length} jogadores`, 'success');
+                console.log('Mesa carregada do localStorage:', tableData);
+            } catch (error) {
+                console.error('Erro ao carregar dados do localStorage:', error);
+                this.showStatusMessage('Erro ao carregar dados salvos', 'error');
+            }
+        } else {
+            this.updateTableDisplay(); // Garantir que a interface seja inicializada
+            this.showStatusMessage('Nova mesa iniciada', 'info');
+        }
+    }
+
+    // Salvar dados da mesa no localStorage
+    saveTableToStorage() {
+        const tableData = {
+            playersList: this.table.playersList,
+            log: this.table.log
+        };
+        localStorage.setItem('lifeCounterTable', JSON.stringify(tableData));
+        console.log('Mesa salva no localStorage:', tableData);
+    }
+
+    // Mostrar mensagem de status
+    showStatusMessage(message, type = 'info') {
+        const statusElement = document.getElementById('statusMessage');
+        if (statusElement) {
+            statusElement.textContent = message;
+            statusElement.className = `status-message show ${type}`;
+            
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                statusElement.classList.remove('show');
+            }, 3000);
+        }
+    }
+
+    // Limpar todos os dados do localStorage
+    clearAllData() {
+        if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+            localStorage.removeItem('lifeCounterTable');
+            this.table.playersList = [];
+            this.table.log = [];
+            this.updateTableDisplay();
+            this.showStatusMessage('Todos os dados foram limpos', 'success');
+        }
     }
 
     initializeEventListeners() {
@@ -48,6 +105,9 @@ class TableController {
         // Reset table button
         document.getElementById('resetTableBtn')?.addEventListener('click', () => this.handleResetTable());
 
+        // Clear all data button
+        document.getElementById('clearDataBtn')?.addEventListener('click', () => this.clearAllData());
+
         // Toggle log drawer
         toggleLogBtn?.addEventListener('click', () => {
             logDrawer.classList.toggle('show');
@@ -78,28 +138,42 @@ class TableController {
                 const playerId = Date.now().toString(); // Generate unique ID
                 this.table.addPlayer(playerId, name, lifeTotal);
                 this.updateTableDisplay();
+                this.saveTableToStorage(); // Salvar após adicionar jogador
+                this.showStatusMessage(`Jogador "${name}" adicionado com sucesso`, 'success');
                 this.clearForm();
             }
         }
     }
 
     handleRemovePlayer(playerId) {
+        const player = this.table.playersList.find(p => p.id === playerId);
+        const playerName = player ? player.name : 'Jogador';
+        
         this.table.removePlayer(playerId);
         this.updateTableDisplay();
+        this.saveTableToStorage(); // Salvar após remover jogador
+        this.showStatusMessage(`Jogador "${playerName}" removido`, 'info');
     }
 
     handleUpdateLife(playerId, amount) {
         const player = this.table.playersList.find(p => p.id === playerId);
         if (player) {
+            const oldLife = player.lifeTotal;
             const newLife = player.lifeTotal + amount;
             this.table.updatePlayerValues(playerId, 'lifeTotal', newLife);
             this.updateTableDisplay();
+            this.saveTableToStorage(); // Salvar após atualizar vida
+            this.showStatusMessage(`${player.name}: ${oldLife} → ${newLife}`, 'info');
         }
     }
 
     handleResetTable() {
-        this.table.resetTable();
-        this.updateTableDisplay();
+        if (confirm('Tem certeza que deseja resetar a mesa? Todos os jogadores serão removidos.')) {
+            this.table.resetTable();
+            this.updateTableDisplay();
+            this.saveTableToStorage(); // Salvar após resetar mesa
+            this.showStatusMessage('Mesa resetada com sucesso', 'success');
+        }
     }
 
     updateTableDisplay() {
