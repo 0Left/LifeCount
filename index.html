@@ -7,19 +7,9 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Life Counter</h1>
-        
-        <div class="controls">
-            <button id="openModalBtn" class="primary-button">Add New Player</button>
-            <button id="resetTableBtn">Reset Table</button>
-            <button id="toggleLogBtn" class="secondary-button">Toggle Log</button>
-            <button id="clearDataBtn" class="danger-button">Clear All Data</button>
-        </div>
-
-        <div id="statusMessage" class="status-message"></div>
-
-        <table>
+    <div class="main-content">
+        <h1 class="centered-title">Life Counter</h1>
+        <table class="players-table">
             <thead>
                 <tr>
                     <th>Player Name</th>
@@ -31,6 +21,11 @@
                 <!-- Player rows will be dynamically added here -->
             </tbody>
         </table>
+        <div class="centered-add-btn">
+            <button id="openModalBtn" class="add-fab" title="Add player">
+                <span class="plus-icon">+</span>
+            </button>
+        </div>
     </div>
 
     <!-- Log Drawer -->
@@ -42,7 +37,21 @@
         <div id="logContainer">
             <!-- Log entries will be dynamically added here -->
         </div>
+        <div class="drawer-footer">
+            <button id="resetTableBtn" class="danger-button">Reset Table</button>
+        </div>
     </div>
+
+    <!-- Botão flutuante para abrir o Log -->
+    <button id="toggleLogBtn" class="log-fab" title="Show Log">
+        <span class="hamburger-icon" aria-label="Open log menu">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+                <rect y="7" width="32" height="4" rx="2" fill="#444"/>
+                <rect y="14" width="32" height="4" rx="2" fill="#444"/>
+                <rect y="21" width="32" height="4" rx="2" fill="#444"/>
+            </svg>
+        </span>
+    </button>
 
     <!-- Modal -->
     <div id="addPlayerModal" class="modal">

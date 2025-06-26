@@ -2,22 +2,14 @@ class PlayersTable {
     constructor() {
         this.playersList = [];
         this.log = [];
-        this.registerLog = (playerId, actionType, log)=>{
-            this.log.push(new Log(playerId, actionType, log));
-        };
         this.addPlayer = (id, name, lifeTotal)=>{
             this.playersList.push(new Player(id, name, lifeTotal));
-            this.registerLog(id, "add", `${name} has been added to the table`);
         };
         this.removePlayer = (id)=>{
-            const name = this.playersList.find(player => player.id === id).name;
             this.playersList = this.playersList.filter(player => player.id !== id);
-            this.registerLog(id, "remove", `${name} has been removed from the table`);
         };
         this.updatePlayerValues = (id,key,value)=>{
-            const name = this.playersList.find(player => player.id === id).name;
             this.playersList.find(player => player.id === id)[key] = value;
-            this.registerLog(id, "update", `${name} has been updated to the table`);
         };
         this.resetTable = ()=>{
             this.playersList = [];

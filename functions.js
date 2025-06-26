@@ -7,6 +7,28 @@ class TableController {
         this.initializeEventListeners();
     }
 
+    // Novo método para registrar logs claros
+    addLog({ type, playerName = '', before, after, diff, extra = '' }) {
+        let logMsg = '';
+        switch (type) {
+            case 'life':
+                logMsg = `[Alteração de Vida] ${playerName}: ${before} → ${after} (${diff > 0 ? '+' : ''}${diff})`;
+                break;
+            case 'add':
+                logMsg = `[Jogador Adicionado] ${playerName} entrou na mesa.`;
+                break;
+            case 'remove':
+                logMsg = `[Jogador Removido] ${playerName} foi removido da mesa.`;
+                break;
+            case 'reset':
+                logMsg = `[Mesa Resetada] Todos os jogadores e logs foram removidos.`;
+                break;
+            default:
+                logMsg = extra || '[Ação]';
+        }
+        this.table.log.push({ type, log: logMsg, timestamp: new Date().toISOString() });
+    }
+
     // Carregar dados da mesa do localStorage
     loadTableFromStorage() {
         const savedTable = localStorage.getItem('lifeCounterTable');
@@ -80,6 +102,18 @@ class TableController {
             modal.classList.add('show');
         });
 
+        // Permitir Enter para adicionar player
+        const playerNameInput = document.getElementById('playerName');
+        const lifeTotalInput = document.getElementById('lifeTotal');
+        [playerNameInput, lifeTotalInput].forEach(input => {
+            input?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    this.handleAddPlayer();
+                    modal.classList.remove('show');
+                }
+            });
+        });
+
         // Close modal
         Array.from(closeModalBtns).forEach(btn => {
             btn.addEventListener('click', () => {
@@ -137,6 +171,7 @@ class TableController {
             if (name) {
                 const playerId = Date.now().toString(); // Generate unique ID
                 this.table.addPlayer(playerId, name, lifeTotal);
+                this.addLog({ type: 'add', playerName: name });
                 this.updateTableDisplay();
                 this.saveTableToStorage(); // Salvar após adicionar jogador
                 this.showStatusMessage(`Jogador "${name}" adicionado com sucesso`, 'success');
@@ -150,6 +185,7 @@ class TableController {
         const playerName = player ? player.name : 'Jogador';
         
         this.table.removePlayer(playerId);
+        this.addLog({ type: 'remove', playerName });
         this.updateTableDisplay();
         this.saveTableToStorage(); // Salvar após remover jogador
         this.showStatusMessage(`Jogador "${playerName}" removido`, 'info');
@@ -161,6 +197,7 @@ class TableController {
             const oldLife = player.lifeTotal;
             const newLife = player.lifeTotal + amount;
             this.table.updatePlayerValues(playerId, 'lifeTotal', newLife);
+            this.addLog({ type: 'life', playerName: player.name, before: oldLife, after: newLife, diff: amount });
             this.updateTableDisplay();
             this.saveTableToStorage(); // Salvar após atualizar vida
             this.showStatusMessage(`${player.name}: ${oldLife} → ${newLife}`, 'info');
@@ -170,6 +207,8 @@ class TableController {
     handleResetTable() {
         if (confirm('Tem certeza que deseja resetar a mesa? Todos os jogadores serão removidos.')) {
             this.table.resetTable();
+            this.table.log = [];
+            this.addLog({ type: 'reset' });
             this.updateTableDisplay();
             this.saveTableToStorage(); // Salvar após resetar mesa
             this.showStatusMessage('Mesa resetada com sucesso', 'success');
@@ -191,13 +230,15 @@ class TableController {
                 <td>${player.lifeTotal}</td>
                 <td class="action-buttons">
                     <div class="life-controls">
-                        <div class="life-control-group">
-                            <button onclick="tableController.handleUpdateLife('${player.id}', -5)">-5</button>
-                            <button onclick="tableController.handleUpdateLife('${player.id}', -3)">-3</button>
-                            <button onclick="tableController.handleUpdateLife('${player.id}', -1)">-1</button>
-                            <button onclick="tableController.handleUpdateLife('${player.id}', 1)">+1</button>
-                            <button onclick="tableController.handleUpdateLife('${player.id}', 3)">+3</button>
-                            <button onclick="tableController.handleUpdateLife('${player.id}', 5)">+5</button>
+                        <div class="life-control-group negatives">
+                            <button class="btn-neg btn-neg-5" onclick="tableController.handleUpdateLife('${player.id}', -5)">-5</button>
+                            <button class="btn-neg btn-neg-3" onclick="tableController.handleUpdateLife('${player.id}', -3)">-3</button>
+                            <button class="btn-neg btn-neg-1" onclick="tableController.handleUpdateLife('${player.id}', -1)">-1</button>
+                        </div>
+                        <div class="life-control-group positives">
+                            <button class="btn-pos btn-pos-1" onclick="tableController.handleUpdateLife('${player.id}', 1)">+1</button>
+                            <button class="btn-pos btn-pos-3" onclick="tableController.handleUpdateLife('${player.id}', 3)">+3</button>
+                            <button class="btn-pos btn-pos-5" onclick="tableController.handleUpdateLife('${player.id}', 5)">+5</button>
                         </div>
                         <button class="remove-btn" onclick="tableController.handleRemovePlayer('${player.id}')">Remove</button>
                     </div>
